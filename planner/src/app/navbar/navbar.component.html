@@ -1,0 +1,46 @@
+<div>
+    <!-- NavBar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div class="container">
+        <a class="navbar-brand" href="#">MonApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#home" routerLink="/navbar">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#planning" routerLink="/navbar">Planning</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  
+    <!-- Contenu Principal -->
+    <div class="container d-flex flex-column align-items-center mt-5">
+      <!-- Partie supérieure -->
+      <div class="upper-section text-center">
+        <img src="profile.jpg" alt="Photo de profil" class="rounded-circle profile-pic mb-3">
+        <h3 class="mb-2">Mes disponibilités</h3>
+        <button class="btn btn-primary mb-4">Voir mon emploi du temps</button>
+      </div>
+  
+      <!-- Partie inférieure -->
+      <div class="lower-section text-center">
+        <h5>Mes abonnés</h5>
+        <div class="d-flex flex-wrap justify-content-center mt-3">
+          <img src="abonne1.jpg" alt="Abonné 1" class="rounded-circle abonne-pic m-2">
+          <img src="abonne2.jpg" alt="Abonné 2" class="rounded-circle abonne-pic m-2">
+          <img src="abonne3.jpg" alt="Abonné 3" class="rounded-circle abonne-pic m-2">
+          <!-- Ajouter autant de photos que nécessaire -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-planning></app-planning>

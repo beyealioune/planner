@@ -1,0 +1,16 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 3px solid #007bff;
+  }
+  
+  .abonne-pic {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid #6c757d;
+  }
+  

@@ -1,0 +1,156 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Styles généraux du calendrier */
+.calendar {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* En-tête du calendrier */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+}
+
+/* Sélecteur de mois */
+.month-picker {
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Navigation entre mois */
+.month-navigation {
+    display: flex;
+    align-items: center;
+}
+
+.month-navigation span {
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 15px;
+}
+
+.month-navigation span:hover {
+    opacity: 0.8;
+}
+
+/* Sélecteur d'année */
+.year-picker {
+    display: flex;
+    align-items: center;
+}
+
+.year-change {
+    font-size: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.year-change:hover {
+    opacity: 0.8;
+}
+
+/* Corps du calendrier */
+.calendar-body {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Jours de la semaine (Dim, Lun, Mar, ...) */
+.calendar-week-day {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Jours du calendrier */
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+    margin: 20px;
+}
+
+/* Styles des cases de jour */
+.calendar-days div {
+    text-align: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Hover sur une case */
+.calendar-days div:hover {
+    background-color: #007bff;
+    color: white;
+  
+}
+
+/* Case vide (aucun jour) */
+.calendar-days div.empty {
+    background-color: transparent;
+    cursor: default;
+    
+}
+
+/* Case du jour actuel */
+.calendar-days div.curr-date {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Case sélectionnée */
+.calendar-days div.selected {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Section des événements */
+.calendar-footer {
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+/* Titre des événements */
+.calendar-footer h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Liste des événements */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 8px;
+    background-color: #e9ecef;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Hover sur un événement */
+li:hover {
+    background-color: #007bff;
+    color: white;
+}

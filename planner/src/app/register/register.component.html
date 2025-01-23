@@ -1,0 +1,67 @@
+<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+  <!-- Logo centré -->
+  <div class="text-center mb-4">
+    <img src="/assets/logo_p6.png" alt="logo" class="custom-logo">
+  </div>
+
+  <!-- Formulaire d'inscription -->
+  <div class="card shadow-sm w-100" style="max-width: 400px;">
+    <div class="card-body">
+      <h2 class="text-center mb-4">Inscription</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="submit()">
+        <div class="form-group mb-3">
+          <div class="input-container">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input 
+              type="text" 
+              id="username" 
+              formControlName="username" 
+              class="form-control" 
+              placeholder="Nom d'utilisateur">
+            <div *ngIf="formControls['username'].invalid && (formControls['username'].dirty || formControls['username'].touched)">
+              <small class="text-danger">Le nom d'utilisateur est requis.</small>
+            </div>
+          </div>
+        </div>
+        <div class="form-group mb-3">
+          <div class="input-container">
+            <label for="email" class="form-label">Adresse mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              class="form-control" 
+              placeholder="Adresse mail">
+            <div *ngIf="formControls['email'].invalid && (formControls['email'].dirty || formControls['email'].touched)">
+              <small class="text-danger">L'adresse mail est requise.</small>
+              <small class="text-danger">L'adresse mail est invalide.</small>
+            </div>
+          </div>
+        </div>
+        <div class="form-group mb-3">
+          <div class="input-container">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password" 
+              class="form-control" 
+              placeholder="Mot de passe">
+            <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)">
+              <small class="text-danger">Le mot de passe est requis.</small>
+              <small class="text-danger">Le mot de passe doit contenir au moins 8 caractères.</small>
+              <small class="text-danger">Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial.</small>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+        </div>
+      </form>
+      <!-- Nouveau bouton pour rediriger vers la page de connexion -->
+      <div class="text-center mt-3">
+        <button class="btn btn-secondary w-100"  (click)="goToLogin()">Se connecter</button>
+      </div>
+    </div>
+  </div>
+</div>
