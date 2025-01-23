@@ -1,4 +1,5 @@
 <div class="calendar">
+  <!-- En-tête du calendrier -->
   <div class="calendar-header">
     <span class="month-change" (click)="prevMonth()">&lt;</span>
     <span class="month-picker">{{ monthNames[currentMonth] }}</span>
@@ -11,6 +12,7 @@
     </div>
   </div>
 
+  <!-- Jours du calendrier -->
   <div class="calendar-days">
     <div
       *ngFor="let day of daysOfMonth"
@@ -21,16 +23,24 @@
       <span (click)="day && selectDate(day)">{{ day || '' }}</span>
     </div>
   </div>
-  
 
-<div class="calendar-footer">
-  <h3>Vos disponibilités</h3>
-  <ul>
-    <li *ngFor="let event of events">
-      {{ event.date }} ({{ event.time }})
-      <button (click)="removeAvailability(event.id)">Supprimer</button>
-    </li>
-  </ul>
+  <!-- Boutons Disponible/Non Disponible -->
+  <div class="availability-buttons">
+    <button (click)="setAvailability(true)">Disponible</button>
+    <button (click)="setAvailability(false)">Non disponible</button>
+  </div>
+
+  <!-- Liste des disponibilités -->
+  <div class="calendar-footer">
+    <h3>Vos disponibilités</h3>
+    <ul>
+      <li *ngFor="let event of events">
+        {{ event.date }} - 
+        <span [ngClass]="event.isAvailable ? 'available' : 'unavailable'">
+          {{ event.isAvailable ? 'Disponible' : 'Pas disponible' }}
+        </span>
+        <button (click)="removeAvailability(event.id)">Supprimer</button>
+      </li>
+    </ul>
+  </div>
 </div>
-
-<button (click)="recupereMe()"> MEEE </button>

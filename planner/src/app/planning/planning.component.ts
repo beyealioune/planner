@@ -9,10 +9,9 @@ import { AuthService } from '../service/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './planning.component.html',
-  styleUrl: './planning.component.css'
+  styleUrls: ['./planning.component.css'],
 })
-export class PlanningComponent implements OnInit{
-
+export class PlanningComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
   currentMonth: number = new Date().getMonth();
   daysOfMonth: (number | null)[] = [];
@@ -20,56 +19,22 @@ export class PlanningComponent implements OnInit{
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
-  events: any[] = [];
+  events: any[] = []; // Liste des disponibilités
   selectedDate: Date | null = null;
   userId: number | null = null;
 
   constructor(
     private userService: UserService,
-    private availabilityService: AvailabilityServiceService, private authService: AuthService
+    private availabilityService: AvailabilityServiceService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.generateCalendar(this.currentMonth, this.currentYear);
     this.loadUser();
   }
-  selectMonth(index: number): void {
-    this.currentMonth = index; // Met à jour le mois actuel
-    this.generateCalendar(this.currentMonth, this.currentYear); // Regénère le calendrier
-  }
-  
-  loadUser(): void {
-    this.userService.getAuthenticatedUser().subscribe((user : any) => {
-      this.userId = user.id;
-      this.loadUserAvailabilities();
-    });
-  }
 
-  isLeapYear(year: number): boolean {
-    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  }
-
-  getFebDays(year: number): number {
-    return this.isLeapYear(year) ? 29 : 28;
-  }
-  selectDate(day: number): void {
-    if (!day) return; // Si aucun jour sélectionné, ne rien faire
-  
-    const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
-    this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
-  
-    const availability = this.events.find((e) => e.date === date);
-  
-    if (availability) {
-      // Si la date est déjà disponible, inverser l'état (disponible -> non disponible)
-      this.markAvailability(availability.id, !availability.isAvailable);
-    } else {
-      // Sinon, ajouter la disponibilité
-      this.addAvailability(date);
-    }
-  }
-  
-
+  // === Méthodes liées au calendrier ===
   generateCalendar(month: number, year: number): void {
     const daysInMonth = [
       31, this.getFebDays(year), 31, 30, 31, 30,
@@ -80,7 +45,14 @@ export class PlanningComponent implements OnInit{
       i < firstDay ? null : i - firstDay + 1
     );
   }
-  
+
+  isLeapYear(year: number): boolean {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  }
+
+  getFebDays(year: number): number {
+    return this.isLeapYear(year) ? 29 : 28;
+  }
 
   prevYear(): void {
     this.currentYear--;
@@ -122,27 +94,36 @@ export class PlanningComponent implements OnInit{
     return this.events.some((e) => e.date === date);
   }
 
-  toggleAvailability(day: number): void {
-    if (!day || !this.userId) return;
-    const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
-    const availability = this.events.find((e) => e.date === date);
+  // === Gestion des disponibilités ===
+  setAvailability(isAvailable: boolean): void {
+    if (!this.selectedDate) {
+      console.error('Aucune date sélectionnée');
+      return;
+    }
 
-    if (availability) {
-      this.removeAvailability(availability.id);
+    const date = this.selectedDate.toISOString().split('T')[0];
+    const existingEvent = this.events.find((e) => e.date === date);
+
+    if (existingEvent) {
+      this.markAvailability(existingEvent.id, isAvailable);
     } else {
-      this.addAvailability(date);
+      this.addAvailability(date, isAvailable);
     }
   }
 
-  loadUserAvailabilities(): void {
-    if (!this.userId) return;
-    this.availabilityService.getUserAvailabilities(this.userId).subscribe((availabilities : any) => {
-      this.events = availabilities.map((a : any) => ({
-        id: a.id,
-        date: a.date,
-        time: a.time,
-      }));
-    });
+  addAvailability(date: string, isAvailable: boolean): void {
+    if (!this.userId) {
+      console.error('User ID non défini');
+      return;
+    }
+
+    this.availabilityService.addAvailability(this.userId, date, isAvailable).subscribe(
+      () => {
+        console.log('Disponibilité ajoutée avec succès');
+        this.loadUserAvailabilities();
+      },
+      (error) => console.error('Erreur lors de l\'ajout de disponibilité :', error)
+    );
   }
 
   removeAvailability(eventId: number): void {
@@ -151,49 +132,37 @@ export class PlanningComponent implements OnInit{
     });
   }
 
-
-  addAvailabilityForDate(day: number): void {
-    if (!day || !this.userId) return;
-    const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
-    this.availabilityService.addAvailability(this.userId, date, '00:00').subscribe(() => {
-      this.loadUserAvailabilities(); // Recharge les disponibilités
-    });
-  }
-  
-  markAsUnavailable(day: number): void {
-    if (!day || !this.userId) return;
-    const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
-    const availability = this.events.find((e) => e.date === date);
-  
-    if (availability) {
-      this.markAvailability(availability.id, false); // Met à jour la disponibilité
-      this.loadUserAvailabilities();
-    }
-  }
-  
-  addAvailability(date: string): void {
-    if (!this.userId) return;
-    console.log(`Adding availability for user ${this.userId} on ${date}`);
-    this.availabilityService.addAvailability(this.userId, date, '00:00').subscribe(
-      () => this.loadUserAvailabilities(),
-      (error) => console.error('Error adding availability:', error)
-    );
-  }
-  
   markAvailability(availabilityId: number, isAvailable: boolean): void {
-    console.log(`Updating availability ${availabilityId} to ${isAvailable}`);
     this.availabilityService.updateAvailability(availabilityId, { isAvailable }).subscribe(
       () => this.loadUserAvailabilities(),
-      (error) => console.error('Error updating availability:', error)
+      (error) => console.error('Erreur lors de la mise à jour de disponibilité :', error)
     );
   }
 
-  recupereMe(){
-    this.authService.me().subscribe((user: any) => {
-      console.log('Utilisateur récupéré après connexion:', user);
-      
+  selectDate(day: number): void {
+    if (!day) return;
+
+    this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
+    console.log('Date sélectionnée:', this.selectedDate);
+  }
+
+  // === Gestion de l'utilisateur et de ses données ===
+  loadUser(): void {
+    this.userService.getAuthenticatedUser().subscribe((user: any) => {
+      this.userId = user.id;
+      this.loadUserAvailabilities();
     });
   }
-  
-  
+
+  loadUserAvailabilities(): void {
+    if (!this.userId) return;
+    this.availabilityService.getUserAvailabilities(this.userId).subscribe((availabilities: any) => {
+      this.events = availabilities.map((a: any) => ({
+        id: a.id,
+        date: a.date,
+        time: a.time,
+        isAvailable: a.isAvailable,
+      }));
+    });
+  }
 }

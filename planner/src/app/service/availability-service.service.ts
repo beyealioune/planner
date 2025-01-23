@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AvailabilityServiceService {
 
-  private apiUrl = ''; // Remplacez par votre URL backend
+  private apiUrl = `http://localhost:8080/api/availabilities`; // Remplacez par votre URL backend
 
   constructor(private http: HttpClient) {}
 
@@ -17,8 +17,8 @@ export class AvailabilityServiceService {
   }
 
   // Ajouter une disponibilité
-  addAvailability(userId: number, date: string, time: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, { userId, date, time });
+  addAvailability(userId: number | null, date: string, isAvailable: boolean): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, { userId, date, isAvailable });
   }
 
   // Supprimer une disponibilité
