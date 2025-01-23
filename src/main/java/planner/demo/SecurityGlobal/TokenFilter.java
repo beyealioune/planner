@@ -1,6 +1,7 @@
 package planner.demo.SecurityGlobal;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import planner.demo.entities.User;
 import planner.demo.jwt.JwtExtractor;
+import planner.demo.jwt.JwtUtil;
 import planner.demo.jwt.JwtValidator;
 import planner.demo.repository.UserRepository;
 
@@ -29,6 +31,9 @@ public class TokenFilter extends OncePerRequestFilter {
     JwtExtractor jwtExtractor;
     @Autowired
     JwtValidator jwtValidator;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
 
     @Autowired
@@ -47,21 +52,28 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer")) {
+        if (header != null && header.startsWith("Bearer ")) {
             String jwt = header.substring(7);
-            String mail = jwtExtractor.extractUsername(jwt);
+            try {
+                String username = jwtExtractor.extractUsername(jwt);
+                Optional<User> userOptional = userRepository.findByEmail(username);
 
-            Optional<User> userOptional = userRepository.findByEmail(mail);
+                if (userOptional.isPresent() && jwtValidator.validateToken(jwt, userOptional.get())) {
+                    SecurityContextHolder.getContext().setAuthentication(
+                            new UsernamePasswordAuthenticationToken(userOptional.get(), null, userOptional.get().getAuthorities())
+                    );
+                }
+            } catch (ExpiredJwtException e) {
+                // JWT expiré, vérifiez s'il peut être régénéré
+                String username = e.getClaims().getSubject();
+                Optional<User> userOptional = userRepository.findByEmail(username);
 
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-
-                if (jwtValidator.validateToken(jwt, (UserDetails) user)) {
-                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, ((UserDetails) user).getAuthorities()));
+                if (userOptional.isPresent()) {
+                    String newToken = jwtUtil.generateToken(userOptional.get());
+                    response.setHeader("Authorization", "Bearer " + newToken); // Ajoutez le nouveau JWT à la réponse
                 }
             }
         }
-
         filterChain.doFilter(request, response);
     }
 

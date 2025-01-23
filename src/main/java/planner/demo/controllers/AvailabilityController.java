@@ -7,8 +7,9 @@ import planner.demo.services.AvailabilityService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/availabilities")
+@RequestMapping("/api/availabilities")
 public class AvailabilityController {
 
     @Autowired
