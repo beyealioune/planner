@@ -1,0 +1,36 @@
+<div class="calendar">
+  <div class="calendar-header">
+    <span class="month-change" (click)="prevMonth()">&lt;</span>
+    <span class="month-picker">{{ monthNames[currentMonth] }}</span>
+    <span class="month-change" (click)="nextMonth()">&gt;</span>
+
+    <div class="year-picker">
+      <span class="year-change" (click)="prevYear()">&lt;</span>
+      <span>{{ currentYear }}</span>
+      <span class="year-change" (click)="nextYear()">&gt;</span>
+    </div>
+  </div>
+
+  <div class="calendar-days">
+    <div
+      *ngFor="let day of daysOfMonth"
+      [class.empty]="!day"
+      [class.selected]="day ? isDateSelected(day) : false"
+      [class.available]="day ? isDateAvailable(day) : false"
+    >
+      <span (click)="day && selectDate(day)">{{ day || '' }}</span>
+    </div>
+  </div>
+  
+
+<div class="calendar-footer">
+  <h3>Vos disponibilités</h3>
+  <ul>
+    <li *ngFor="let event of events">
+      {{ event.date }} ({{ event.time }})
+      <button (click)="removeAvailability(event.id)">Supprimer</button>
+    </li>
+  </ul>
+</div>
+
+<button (click)="recupereMe()"> MEEE </button>
