@@ -30,5 +30,13 @@ export class AvailabilityServiceService {
   updateAvailability(availabilityId: number, availability: any): Observable<void> {
     return this.http.put<void>(`/api/availabilities/${availabilityId}`, availability);
   }
+
+
+
+  getCommonAvailabilities(user1Id: number, user2Id: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `/api/availabilities/common?user1=${user1Id}&user2=${user2Id}`
+    );
+  }
   
 }

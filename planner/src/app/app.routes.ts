@@ -5,10 +5,14 @@ import { PlanningComponent } from './planning/planning.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ConnexionComponent } from './connexion/connexion.component';
 import { RegisterComponent } from './register/register.component';
+import { ProfilComponent } from './profil/profil.component';
 
 export const routes: Routes = [
     {
       path: 'navbar',component: NavbarComponent,
+    },
+    {
+      path: 'profile',component: ProfilComponent
     },
     {
         path: 'home',component: HomeComponent,

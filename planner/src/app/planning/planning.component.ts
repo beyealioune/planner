@@ -3,11 +3,22 @@ import { Component, OnInit } from '@angular/core';
 import { AvailabilityServiceService } from '../service/availability-service.service';
 import { UserService } from '../service/user.service';
 import { AuthService } from '../service/auth.service';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-planning',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatDividerModule,],
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.css'],
 })
@@ -22,6 +33,7 @@ export class PlanningComponent implements OnInit {
   events: any[] = []; // Liste des disponibilités
   selectedDate: Date | null = null;
   userId: number | null = null;
+  isAvailable!: boolean;
 
   constructor(
     private userService: UserService,
@@ -88,11 +100,12 @@ export class PlanningComponent implements OnInit {
     return this.selectedDate?.getDate() === day;
   }
 
-  isDateAvailable(day: number): boolean {
-    if (!day) return false;
-    const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
-    return this.events.some((e) => e.date === date);
-  }
+getDateAvailabilityStatus(day: number): string | null {
+  const date = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
+  const event = this.events.find(e => e.date === date);
+  return event ? (event.isAvailable ? 'available' : 'unavailable') : null;
+}
+
 
   // === Gestion des disponibilités ===
   setAvailability(isAvailable: boolean): void {
@@ -100,14 +113,21 @@ export class PlanningComponent implements OnInit {
       console.error('Aucune date sélectionnée');
       return;
     }
-
+  
     const date = this.selectedDate.toISOString().split('T')[0];
+    this.isAvailable = isAvailable; // Inverse la variable locale
+  
     const existingEvent = this.events.find((e) => e.date === date);
-
+  
     if (existingEvent) {
-      this.markAvailability(existingEvent.id, isAvailable);
+      // Mise à jour de l'état de disponibilité dans l'événement existant
+      existingEvent.isAvailable = this.isAvailable; 
+      this.markAvailability(existingEvent.id, this.isAvailable);
     } else {
-      this.addAvailability(date, isAvailable);
+      // Ajout d'une nouvelle disponibilité dans le tableau
+      const newEvent = { id: Date.now(), date, isAvailable: this.isAvailable };
+      this.events.push(newEvent);
+      this.addAvailability(date, this.isAvailable);
     }
   }
 

@@ -20,4 +20,19 @@ export class UserService {
   updateUserProfile(user: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}users/auth/me`, user);
   }
+
+
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}users`);
+  }
+
+  subscribe(toUserId: number, subscriberId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}users/${toUserId}/subscribe/${subscriberId}`, {});
+  }
+  
+  unsubscribe(toUserId: number, subscriberId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}users/${toUserId}/unsubscribe/${subscriberId}`, {});
+  }
+  
+
 }

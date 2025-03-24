@@ -1,0 +1,42 @@
+<mat-card class="profile-card">
+    <h2>Mon profil</h2>
+  
+    <img
+    [src]="user.photoFilename ? '/assets/profiles/' + user.photoFilename : '/assets/default-profile.jpg'"
+    (error)="onImageError($event)"
+    class="rounded-circle"
+    width="120"
+  />
+  
+  
+    <div>
+      <input type="file" (change)="onFileSelected($event)" />
+      <button mat-raised-button (click)="uploadPhoto()">Uploader</button>
+    </div>
+  
+    <mat-form-field class="w-100 mt-3">
+      <mat-label>Nom d'utilisateur</mat-label>
+      <input matInput [(ngModel)]="user.username" />
+    </mat-form-field>
+  
+    <mat-form-field class="w-100">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="user.email" />
+    </mat-form-field>
+  
+    <mat-form-field class="w-100">
+      <mat-label>Bio</mat-label>
+      <textarea matInput [(ngModel)]="user.bio"></textarea>
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" (click)="updateProfile()">Sauvegarder</button>
+  
+    <hr class="my-4" />
+  
+    <mat-form-field class="w-100">
+      <mat-label>Nouveau mot de passe</mat-label>
+      <input matInput [(ngModel)]="newPassword" type="password" />
+    </mat-form-field>
+    <button mat-raised-button color="warn" (click)="updatePassword()">Changer le mot de passe</button>
+  </mat-card>
+  
