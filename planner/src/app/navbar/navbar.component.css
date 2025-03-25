@@ -1,25 +1,108 @@
-@import "bootstrap/dist/css/bootstrap.min.css";
+.navbar-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
+.navbar-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+}
+
+.nav-links.open {
+  display: block;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
 .profile-pic {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #007bff;
+  border: 3px solid #2196f3; /* bleu Material */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.profile-section,
+.abonne-section,
+.common-section,
+.toggle-section,
+.subscriptions-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  text-align: center;
+}
+
+.abonne-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.abonne-card {
+  width: 160px;
+  padding: 1rem;
 }
 
 .abonne-pic {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border: 2px solid #6c757d;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+.navbar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.card-header {
-  font-size: 1rem;
-  background-color: #f8f9fa;
+.navbar-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
 }
 
-.list-group-item {
-  font-size: 0.95rem;
+.spacer {
+  flex: 1;
+}
+
+.mobile-menu-button {
+  display: block;
+}
+
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-button {
+    display: none;
+  }
+  .mobile-menu {
+    display: none !important;
+  }
 }

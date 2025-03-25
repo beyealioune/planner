@@ -1,55 +1,49 @@
 <div>
-  <!-- NavBar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-      <a class="navbar-brand" href="#">MonApp</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
+  <!-- Modern Responsive Navbar -->
+  <mat-toolbar color="primary" class="navbar-toolbar">
+    <div class="navbar-container">
+      <span class="navbar-title">PLANNER</span>
+      <span class="spacer"></span>
+  
+      <!-- Menu Burger -->
+      <button mat-icon-button class="mobile-menu-button" (click)="isMenuOpen = !isMenuOpen">
+        <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" routerLink="/navbar">Home</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/planning">Planning</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/profile">Mon Profil</a></li>
-        </ul>
-      </div>
     </div>
-  </nav>
+  </mat-toolbar>
+  
+  <!-- Menu déroulant uniquement en mobile -->
+  <div class="mobile-menu" *ngIf="isMenuOpen">
+    <a mat-list-item routerLink="/navbar" (click)="isMenuOpen = false">Home</a>
+    <a mat-list-item routerLink="/planning" (click)="isMenuOpen = false">Abonnements</a>
+    <a mat-list-item routerLink="/profile" (click)="isMenuOpen = false">Mon Profil</a>
+  </div>
 
-  <!-- Contenu Principal -->
-  <div class="container mt-5 d-flex flex-column align-items-center">
-    <!-- Profil -->
-    <div class="text-center mb-5">
-      <img src="profile.jpg" alt="Photo de profil" class="rounded-circle profile-pic mb-3" />
-      <h3 class="mb-2">Mes disponibilités</h3>
-      <button class="btn btn-primary">Voir mon emploi du temps</button>
+  <div class="content-container">
+    <!-- Profil Utilisateur -->
+    <div class="profile-section">
+      <img
+        [src]="'/assets/profiles/' + currentUser.id + '.jpg'"
+        alt="Photo de profil"
+        class="profile-pic"
+        (error)="handleImgError($event)"
+      />
+      <h3>Mes disponibilités</h3>
+      <button mat-raised-button color="primary">Voir mon emploi du temps</button>
     </div>
 
-    <!-- Abonnés -->
-    <div class="text-center">
+    <!-- Liste des abonnés -->
+    <div class="abonne-section">
       <h5>Mes abonnés</h5>
-      <div class="d-flex flex-wrap justify-content-center mt-4 abonne-list">
-        <mat-card
-          *ngFor="let user of allUsers"
-          class="m-2 text-center"
-          (click)="toggleSubscription(user)"
-          style="cursor: pointer; width: 180px;"
-        >
+      <div class="abonne-list">
+        <mat-card *ngFor="let user of allUsers" class="abonne-card" (click)="toggleSubscription(user)">
           <img
-            [src]="'/assets/profiles/' + user.id + '.jpg'"
+            [src]="getUserPhotoUrl(user.id)"
+            (error)="onImgError($event)"
             alt="Photo"
-            class="abonne-pic mx-auto mt-2"
+            class="abonne-pic"
           />
-          <div class="mt-2">
+          <div class="abonne-info">
             <h6>{{ user.username }}</h6>
             <button mat-stroked-button color="primary">
               {{ isSubscribed(user) ? 'Abonné' : 'S’abonner' }}
@@ -59,38 +53,38 @@
       </div>
     </div>
 
-    <!-- Disponibilités en commun -->
-    <div *ngIf="commonAvailabilities.length > 0" class="text-center mt-4 w-100">
+    <!-- Disponibilités communes -->
+    <div *ngIf="commonAvailabilities.length > 0" class="common-section">
       <h5>Disponibilités en commun</h5>
-      <ul class="list-group mx-auto" style="max-width: 600px;">
-        <li *ngFor="let dispo of commonAvailabilities" class="list-group-item">
+      <!-- <mat-list>
+        <mat-list-item *ngFor="let dispo of commonAvailabilities">
           {{ dispo.date }} - {{ dispo.isAvailable ? 'Disponible' : 'Indisponible' }}
-        </li>
-      </ul>
+        </mat-list-item>
+      </mat-list> -->
     </div>
 
-    <!-- Bouton afficher / masquer -->
-    <div class="text-center mt-4">
-      <button class="btn btn-outline-primary" (click)="loadAllCommonAvailabilities()">
+    <!-- Bouton afficher/masquer -->
+    <div class="toggle-section">
+      <button mat-button (click)="loadAllCommonAvailabilities()">
         {{ showSubscriptions ? 'Masquer' : 'Voir' }} les disponibilités de mes abonnements
       </button>
     </div>
 
     <!-- Liste des disponibilités abonnements -->
-    <div *ngIf="showSubscriptions" class="mt-4 w-100">
-      <h5 class="text-center">Disponibilités de mes abonnements</h5>
-      <div class="row justify-content-center">
-        <div class="col-md-6" *ngFor="let item of subscriptionsAvailability">
-          <div class="card mb-3 shadow-sm">
-            <div class="card-header bg-light"><strong>{{ item.username }}</strong></div>
-            <ul class="list-group list-group-flush">
-              <li *ngFor="let dispo of item.availabilities" class="list-group-item">
-                {{ dispo.date }} - {{ dispo.isAvailable ? 'Disponible' : 'Indisponible' }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+    <div *ngIf="showSubscriptions" class="subscriptions-section">
+      <h5>Disponibilités de mes abonnements</h5>
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let item of subscriptionsAvailability">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ item.username }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngFor="let dispo of item.availabilities">
+              {{ dispo.date }} - {{ dispo.isAvailable ? 'Disponible' : 'Indisponible' }}
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
   </div>
 

@@ -8,6 +8,9 @@ import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { PlanningComponent } from "../planning/planning.component";
+import { MatListModule } from "@angular/material/list";
+import { MatExpansionModule } from '@angular/material/expansion'; // ✅ Ajouté
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-navbar',
@@ -18,7 +21,10 @@ import { PlanningComponent } from "../planning/planning.component";
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    PlanningComponent
+    PlanningComponent,
+    MatListModule,
+    MatExpansionModule, 
+    MatToolbarModule// ✅ requis pour <mat-expansion-panel>
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
@@ -30,6 +36,7 @@ export class NavbarComponent implements OnInit {
   selectedUserId: number | null = null;
   subscriptionsAvailability: { userId: number, username: string, availabilities: any[] }[] = [];
   showSubscriptions = false;
+  isMenuOpen: boolean = false;
 
 
   constructor(
@@ -103,5 +110,19 @@ export class NavbarComponent implements OnInit {
         });
     });
   }
+  
+
+  getUserPhotoUrl(userId: number): string {
+    return `http://localhost:8080/assets/profiles/${userId}.jpg`;
+  }
+  
+  onImgError(event: any) {
+    event.target.src = '/assets/default-profile.jpg';
+  }
+
+  handleImgError(event: Event) {
+    (event.target as HTMLImageElement).src = '/assets/default.jpg';
+  }
+  
   
 }

@@ -1,71 +1,93 @@
-.calendar {
-    max-width: 600px;
-    margin: auto;
-    padding: 16px;
-  }
-  
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
+.calendar-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month-label {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.calendar-day {
+  text-align: center;
+}
+
+.calendar-day button {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.calendar-day.selected button {
+  border: 2px solid #3f51b5;
+}
+
+.calendar-day.available button {
+  background-color: #d1f5d3;
+}
+
+.calendar-day.unavailable button {
+  background-color: #f8c7c7;
+}
+
+.availability-actions {
+  display: flex;
+  justify-content: space-around;
+  margin: 16px 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.availability-list {
+  margin-top: 24px;
+}
+
+.event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.event-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.available {
+  color: green;
+  font-weight: 600;
+}
+
+.unavailable {
+  color: red;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
   .calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin: 16px 0;
+    grid-template-columns: repeat(4, 1fr);
   }
-  
-  .calendar-day {
-    text-align: center;
-  }
-  
-  .calendar-day.selected button {
-    border: 2px solid #3f51b5;
-  }
-  
-  .calendar-day.available button {
-    background-color: #c8e6c9;
-  }
-  
-  .calendar-day.unavailable button {
-    background-color: #ffcdd2;
-  }
-  
-  .availability-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin: 16px 0;
-  }
-  
-  .calendar-footer {
-    margin-top: 24px;
-  }
-  
-  .event-item {
-    flex: 1;
-  }
-  .event-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .event-info {
-    display: flex;
-    gap: 8px;
+
+  .availability-actions {
+    flex-direction: column;
     align-items: center;
   }
-  
-  .available {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .unavailable {
-    color: red;
-    font-weight: bold;
-  }
-  
+}

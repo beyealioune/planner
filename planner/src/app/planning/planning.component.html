@@ -1,29 +1,24 @@
-<mat-card class="calendar">
-  <!-- En-tête du calendrier -->
+<mat-card class="calendar-container">
   <mat-toolbar color="primary" class="calendar-header">
     <button mat-icon-button (click)="prevMonth()">
       <mat-icon>chevron_left</mat-icon>
     </button>
-
-    <span class="month-picker">
-      {{ monthNames[currentMonth] }} {{ currentYear }}
-    </span>
-
+    <span class="month-label">{{ monthNames[currentMonth] }} {{ currentYear }}</span>
     <button mat-icon-button (click)="nextMonth()">
       <mat-icon>chevron_right</mat-icon>
     </button>
   </mat-toolbar>
 
-  <!-- Jours du calendrier -->
+  <!-- Grille de jours -->
   <div class="calendar-days">
     <div
       *ngFor="let day of daysOfMonth"
       class="calendar-day"
-      [class.empty]="!day"
-      [class.selected]="day ? isDateSelected(day) : false"
       [ngClass]="{
-        available: day ? getDateAvailabilityStatus(day) === 'available' : false,
-        unavailable: day ? getDateAvailabilityStatus(day) === 'unavailable' : false
+        'empty': !day,
+        'selected': day && isDateSelected(day),
+        'available': day && isAvailable(day),
+        'unavailable': day && isUnavailable(day)
       }"
     >
       <button
@@ -37,48 +32,36 @@
     </div>
   </div>
 
-  <!-- Boutons Disponible/Non disponible -->
-  <div class="availability-buttons">
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="setAvailability(true)"
-      [disabled]="!selectedDate"
-    >
+  <!-- Boutons -->
+  <div class="availability-actions">
+    <button mat-raised-button color="primary" (click)="setAvailability(true)" [disabled]="!selectedDate">
       Disponible
     </button>
-    <button
-      mat-raised-button
-      color="warn"
-      (click)="setAvailability(false)"
-      [disabled]="!selectedDate"
-    >
+    <button mat-raised-button color="warn" (click)="setAvailability(false)" [disabled]="!selectedDate">
       Non disponible
     </button>
   </div>
 
-  <!-- Liste des disponibilités -->
   <mat-divider></mat-divider>
-  <div class="calendar-footer">
+
+  <!-- Liste -->
+  <div class="availability-list">
     <h3>Vos disponibilités</h3>
-    <mat-list-item *ngFor="let event of events">
-      <div class="event-row">
-        <div class="event-info">
-          {{ event.date }} —
-          <span [ngClass]="event.isAvailable ? 'available' : 'unavailable'">
-            {{ event.isAvailable ? 'Disponible' : 'Non disponible' }}
-          </span>
+    <mat-list>
+      <mat-list-item *ngFor="let event of events">
+        <div class="event-row">
+          <div class="event-info">
+            <mat-icon>{{ event.isAvailable ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ event.date }} — 
+            <span [ngClass]="event.isAvailable ? 'available' : 'unavailable'">
+              {{ event.isAvailable ? 'Disponible' : 'Non disponible' }}
+            </span>
+          </div>
+          <button mat-icon-button color="warn" (click)="removeAvailability(event.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="removeAvailability(event.id)"
-          aria-label="Supprimer disponibilité"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
-    </mat-list-item>
-    
+      </mat-list-item>
+    </mat-list>
   </div>
 </mat-card>
